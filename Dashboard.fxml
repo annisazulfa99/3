@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<!--
+    File: Dashboard.fxml
+    Controller: HomeController.java ✅ INI YANG BENAR!
+    Fungsi: Halaman STATISTIK DASHBOARD (sementara kosong)
+-->
+
+<BorderPane fx:id="rootPane" prefHeight="700.0" prefWidth="1200.0" 
+            style="-fx-background-color: #F5E6D3;" 
+            xmlns="http://javafx.com/javafx/21" 
+            xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.inventaris.controller.HomeController">
+
+    <center>
+        <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" 
+                    style="-fx-background-color: #F5E6D3;">
+            <VBox spacing="30" alignment="CENTER" 
+                  style="-fx-padding: 50; -fx-background-color: #F5E6D3;">
+
+                <!-- PLACEHOLDER UNTUK STATISTIK DASHBOARD -->
+                
+                <VBox alignment="CENTER" spacing="20" 
+                      style="-fx-background-color: #FFFFFF; -fx-background-radius: 20; -fx-padding: 50; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+                    
+                    <!-- Icon -->
+                    <Label style="-fx-font-size: 72px;" text="📊" />
+                    
+                    <!-- Welcome Message -->
+                    <Label fx:id="welcomeLabel" 
+                           style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #6A5436;" 
+                           text="Selamat Datang" />
+                    
+                    <!-- Info Message -->
+                    <Label fx:id="infoLabel" 
+                           style="-fx-font-size: 16px; -fx-text-fill: #6A5436; -fx-text-alignment: center; -fx-wrap-text: true;" 
+                           text="Halaman Dashboard Statistik" 
+                           wrapText="true" 
+                           maxWidth="500" />
+                    
+                    <!-- Separator -->
+                    <Label style="-fx-font-size: 14px; -fx-text-fill: #999; -fx-padding: 20 0 0 0;" 
+                           text="━━━━━━━━━━━━━━━━━━━━" />
+                    
+                    <!-- Future Features Info -->
+                    <VBox spacing="10" alignment="CENTER">
+                        <Label style="-fx-font-size: 14px; -fx-text-fill: #6A5436; -fx-font-weight: bold;" 
+                               text="Fitur yang akan datang:" />
+                        <Label style="-fx-font-size: 13px; -fx-text-fill: #999;" 
+                               text="• Total Barang Tersedia" />
+                        <Label style="-fx-font-size: 13px; -fx-text-fill: #999;" 
+                               text="• Statistik Peminjaman" />
+                        <Label style="-fx-font-size: 13px; -fx-text-fill: #999;" 
+                               text="• Grafik Trend Peminjaman" />
+                        <Label style="-fx-font-size: 13px; -fx-text-fill: #999;" 
+                               text="• Barang Terlambat Dikembalikan" />
+                    </VBox>
+                    
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>
