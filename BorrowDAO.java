@@ -108,13 +108,9 @@ public class BorrowDAO {
      * @return Borrow object if found, null otherwise
      */
     public Borrow getById(int id) {
-        String sql = "SELECT b.*, u.nama as nama_peminjam, p.no_telepon, br.nama_barang " +
-                     "FROM borrow b " +
-                     "JOIN peminjam p ON b.id_peminjam = p.id_peminjam " +
-                     "JOIN user u ON p.id_user = u.id_user " +
-                     "JOIN barang br ON b.kode_barang = br.kode_barang " +
-                     "WHERE b.id_peminjaman = ?";
-        
+    String sql = "SELECT b.*, u.nama as nama_peminjam, br.nama_barang " +
+                 "FROM borrow b " +
+                 "JOIN user u ON b.id_peminjam = u.id_user " ;
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
@@ -139,13 +135,10 @@ public class BorrowDAO {
      * @return List of all borrow
      */
     public List<Borrow> getAll() {
-        List<Borrow> list = new ArrayList<>();
-        String sql = "SELECT b.*, u.nama as nama_peminjam, p.no_telepon, br.nama_barang " +
-                     "FROM borrow b " +
-                     "JOIN peminjam p ON b.id_peminjam = p.id_peminjam " +
-                     "JOIN user u ON p.id_user = u.id_user " +
-                     "JOIN barang br ON b.kode_barang = br.kode_barang " +
-                     "ORDER BY b.created_at DESC";
+    List<Borrow> list = new ArrayList<>();
+    String sql = "SELECT b.*, u.nama as nama_peminjam, br.nama_barang " +
+                 "FROM borrow b " +
+                 "JOIN user u ON b.id_peminjam = u.id_user " ;
         
         try (Connection conn = dbConfig.getConnection();
              Statement stmt = conn.createStatement();
@@ -171,13 +164,12 @@ public class BorrowDAO {
      */
     public List<Borrow> getByPeminjamId(int peminjamId) {
         List<Borrow> list = new ArrayList<>();
-        String sql = "SELECT b.*, u.nama as nama_peminjam, p.no_telepon, br.nama_barang " +
-                     "FROM borrow b " +
-                     "JOIN peminjam p ON b.id_peminjam = p.id_peminjam " +
-                     "JOIN user u ON p.id_user = u.id_user " +
-                     "JOIN barang br ON b.kode_barang = br.kode_barang " +
-                     "WHERE b.id_peminjam = ? " +
-                     "ORDER BY b.created_at DESC";
+        String sql = "SELECT b.*, u.nama as nama_peminjam, br.nama_barang " +
+             "FROM borrow b " +
+             "JOIN user u ON b.id_peminjam = u.id_user " + // ✅
+             "JOIN barang br ON b.kode_barang = br.kode_barang " +
+             "WHERE b.id_peminjam = ? " +
+             "ORDER BY b.created_at DESC";
         
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -203,14 +195,10 @@ public class BorrowDAO {
      * @return List of active borrow
      */
     public List<Borrow> getActiveBorrows() {
-        List<Borrow> list = new ArrayList<>();
-        String sql = "SELECT b.*, u.nama as nama_peminjam, p.no_telepon, br.nama_barang " +
-                     "FROM borrow b " +
-                     "JOIN peminjam p ON b.id_peminjam = p.id_peminjam " +
-                     "JOIN user u ON p.id_user = u.id_user " +
-                     "JOIN barang br ON b.kode_barang = br.kode_barang " +
-                     "WHERE b.status_barang = 'dipinjam' " +
-                     "ORDER BY b.dl_kembali ASC";
+    List<Borrow> list = new ArrayList<>();
+    String sql = "SELECT b.*, u.nama as nama_peminjam, br.nama_barang " +
+                 "FROM borrow b " +
+                 "JOIN user u ON b.id_peminjam = u.id_user " ;
         
         try (Connection conn = dbConfig.getConnection();
              Statement stmt = conn.createStatement();
@@ -234,14 +222,10 @@ public class BorrowDAO {
      * @return List of pending borrow
      */
     public List<Borrow> getPendingBorrows() {
-        List<Borrow> list = new ArrayList<>();
-        String sql = "SELECT b.*, u.nama as nama_peminjam, p.no_telepon, br.nama_barang " +
-                     "FROM borrow b " +
-                     "JOIN peminjam p ON b.id_peminjam = p.id_peminjam " +
-                     "JOIN user u ON p.id_user = u.id_user " +
-                     "JOIN barang br ON b.kode_barang = br.kode_barang " +
-                     "WHERE b.status_barang = 'pending' " +
-                     "ORDER BY b.created_at DESC";
+    List<Borrow> list = new ArrayList<>();
+    String sql = "SELECT b.*, u.nama as nama_peminjam, br.nama_barang " +
+                 "FROM borrow b " +
+                 "JOIN user u ON b.id_peminjam = u.id_user " ;
         
         try (Connection conn = dbConfig.getConnection();
              Statement stmt = conn.createStatement();
@@ -425,14 +409,10 @@ public class BorrowDAO {
      * @return List of overdue borrow
      */
     public List<Borrow> getOverdueBorrows() {
-        List<Borrow> list = new ArrayList<>();
-        String sql = "SELECT b.*, u.nama as nama_peminjam, p.no_telepon, br.nama_barang " +
-                     "FROM borrow b " +
-                     "JOIN peminjam p ON b.id_peminjam = p.id_peminjam " +
-                     "JOIN user u ON p.id_user = u.id_user " +
-                     "JOIN barang br ON b.kode_barang = br.kode_barang " +
-                     "WHERE b.status_barang = 'dipinjam' AND b.dl_kembali < CURDATE() " +
-                     "ORDER BY b.dl_kembali ASC";
+    List<Borrow> list = new ArrayList<>();
+    String sql = "SELECT b.*, u.nama as nama_peminjam, br.nama_barang " +
+                 "FROM borrow b " +
+                 "JOIN user u ON b.id_peminjam = u.id_user " ;
         
         try (Connection conn = dbConfig.getConnection();
              Statement stmt = conn.createStatement();
@@ -485,7 +465,6 @@ public class BorrowDAO {
         
         // Extended properties
         borrow.setNamaPeminjam(rs.getString("nama_peminjam"));
-        borrow.setNoTelepon(rs.getString("no_telepon"));
         borrow.setNamaBarang(rs.getString("nama_barang"));
         
         return borrow;
