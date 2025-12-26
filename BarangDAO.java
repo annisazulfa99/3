@@ -1,6 +1,6 @@
 // ================================================================
 // File: src/main/java/com/inventaris/dao/BarangDAO.java
-// UPDATED: Sesuai dengan database Anda + foto_url support
+// FIXED: Semua JOIN sudah disesuaikan ke tabel user
 // ================================================================
 package com.inventaris.dao;
 
@@ -83,13 +83,14 @@ public class BarangDAO {
     }
     
     /**
-     * Get all barang dengan JOIN ke instansi (untuk nama pemilik)
+     * Get all barang dengan JOIN ke user (untuk nama pemilik)
      */
     public List<Barang> getAll() {
         List<Barang> list = new ArrayList<>();
-        
-        // Pakai VIEW yang sudah ada di database Anda
-        String sql = "SELECT * FROM v_barang_with_owner ORDER BY created_at DESC";
+        String sql = "SELECT b.*, u.nama as nama_pemilik " +
+                     "FROM barang b " +
+                     "LEFT JOIN user u ON b.id_instansi = u.id_user " +
+                     "ORDER BY b.created_at DESC";
         
         try (Connection conn = dbConfig.getConnection();
              Statement stmt = conn.createStatement();
@@ -97,10 +98,7 @@ public class BarangDAO {
             
             while (rs.next()) {
                 Barang barang = extractBarangFromResultSet(rs);
-                
-                // Set nama pemilik dari VIEW
                 barang.setNamaPemilik(rs.getString("nama_pemilik"));
-                
                 list.add(barang);
             }
             
@@ -114,14 +112,14 @@ public class BarangDAO {
     
     /**
      * Get available barang (stok > 0 and status tersedia)
-     * DENGAN JOIN untuk nama instansi
+     * ✅ FIXED: JOIN ke user
      */
     public List<Barang> getAvailable() {
         List<Barang> list = new ArrayList<>();
         
-        String sql = "SELECT b.*, i.nama_instansi as nama_pemilik " +
+        String sql = "SELECT b.*, u.nama as nama_pemilik " +
                      "FROM barang b " +
-                     "LEFT JOIN instansi i ON b.id_instansi = i.id_instansi " +
+                     "LEFT JOIN user u ON b.id_instansi = u.id_user " +
                      "WHERE b.jumlah_tersedia > 0 AND b.status = 'tersedia' " +
                      "ORDER BY b.nama_barang";
         
@@ -145,13 +143,14 @@ public class BarangDAO {
     
     /**
      * Get barang by instansi
+     * ✅ FIXED: JOIN ke user
      */
     public List<Barang> getByInstansi(Integer instansiId) {
         List<Barang> list = new ArrayList<>();
         
-        String sql = "SELECT b.*, i.nama_instansi as nama_pemilik " +
+        String sql = "SELECT b.*, u.nama as nama_pemilik " +
                      "FROM barang b " +
-                     "LEFT JOIN instansi i ON b.id_instansi = i.id_instansi " +
+                     "LEFT JOIN user u ON b.id_instansi = u.id_user " +
                      "WHERE b.id_instansi = ? " +
                      "ORDER BY b.nama_barang";
         
@@ -256,13 +255,14 @@ public class BarangDAO {
     
     /**
      * Search barang by keyword (dengan JOIN untuk nama pemilik)
+     * ✅ FIXED: JOIN ke user
      */
     public List<Barang> search(String keyword) {
         List<Barang> list = new ArrayList<>();
         
-        String sql = "SELECT b.*, i.nama_instansi as nama_pemilik " +
+        String sql = "SELECT b.*, u.nama as nama_pemilik " +
                      "FROM barang b " +
-                     "LEFT JOIN instansi i ON b.id_instansi = i.id_instansi " +
+                     "LEFT JOIN user u ON b.id_instansi = u.id_user " +
                      "WHERE b.kode_barang LIKE ? OR b.nama_barang LIKE ? OR b.lokasi_barang LIKE ? " +
                      "ORDER BY b.nama_barang";
         
@@ -338,13 +338,14 @@ public class BarangDAO {
     
     /**
      * Get barang by status
+     * ✅ FIXED: JOIN ke user
      */
     public List<Barang> getByStatus(String status) {
         List<Barang> list = new ArrayList<>();
         
-        String sql = "SELECT b.*, i.nama_instansi as nama_pemilik " +
+        String sql = "SELECT b.*, u.nama as nama_pemilik " +
                      "FROM barang b " +
-                     "LEFT JOIN instansi i ON b.id_instansi = i.id_instansi " +
+                     "LEFT JOIN user u ON b.id_instansi = u.id_user " +
                      "WHERE b.status = ? " +
                      "ORDER BY b.nama_barang";
         
@@ -370,13 +371,14 @@ public class BarangDAO {
     
     /**
      * Get barang with low stock (< 5)
+     * ✅ FIXED: JOIN ke user
      */
     public List<Barang> getLowStock() {
         List<Barang> list = new ArrayList<>();
         
-        String sql = "SELECT b.*, i.nama_instansi as nama_pemilik " +
+        String sql = "SELECT b.*, u.nama as nama_pemilik " +
                      "FROM barang b " +
-                     "LEFT JOIN instansi i ON b.id_instansi = i.id_instansi " +
+                     "LEFT JOIN user u ON b.id_instansi = u.id_user " +
                      "WHERE b.jumlah_tersedia < 5 AND b.jumlah_tersedia > 0 " +
                      "ORDER BY b.jumlah_tersedia";
         
@@ -406,39 +408,38 @@ public class BarangDAO {
      * Extract Barang object from ResultSet
      * UPDATED: Support foto_url
      */
-private Barang extractBarangFromResultSet(ResultSet rs) throws SQLException {
-    Barang barang = new Barang();
-    
-    // ID
-    barang.setIdBarang(rs.getInt("id_barang"));
-    
-    // Handle NULL id_instansi
-    int idInstansi = rs.getInt("id_instansi");
-    barang.setIdInstansi(rs.wasNull() ? null : idInstansi);
-    
-    // Data utama
-    barang.setKodeBarang(rs.getString("kode_barang"));
-    barang.setNamaBarang(rs.getString("nama_barang"));
-    barang.setLokasiBarang(rs.getString("lokasi_barang"));
-    barang.setJumlahTotal(rs.getInt("jumlah_total"));
-    barang.setJumlahTersedia(rs.getInt("jumlah_tersedia"));
-    barang.setDeskripsi(rs.getString("deskripsi"));
-    barang.setKondisiBarang(rs.getString("kondisi_barang"));
-    barang.setStatus(rs.getString("status"));
-    barang.setFoto(rs.getString("foto"));
-    
-    // Foto URL (opsional)
-    try {
-        barang.setFotoUrl(rs.getString("foto_url"));
-    } catch (SQLException e) {
-        barang.setFotoUrl(null);
+    private Barang extractBarangFromResultSet(ResultSet rs) throws SQLException {
+        Barang barang = new Barang();
+        
+        // ID
+        barang.setIdBarang(rs.getInt("id_barang"));
+        
+        // Handle NULL id_instansi
+        int idInstansi = rs.getInt("id_instansi");
+        barang.setIdInstansi(rs.wasNull() ? null : idInstansi);
+        
+        // Data utama
+        barang.setKodeBarang(rs.getString("kode_barang"));
+        barang.setNamaBarang(rs.getString("nama_barang"));
+        barang.setLokasiBarang(rs.getString("lokasi_barang"));
+        barang.setJumlahTotal(rs.getInt("jumlah_total"));
+        barang.setJumlahTersedia(rs.getInt("jumlah_tersedia"));
+        barang.setDeskripsi(rs.getString("deskripsi"));
+        barang.setKondisiBarang(rs.getString("kondisi_barang"));
+        barang.setStatus(rs.getString("status"));
+        barang.setFoto(rs.getString("foto"));
+        
+        // Foto URL (opsional)
+        try {
+            barang.setFotoUrl(rs.getString("foto_url"));
+        } catch (SQLException e) {
+            barang.setFotoUrl(null);
+        }
+        
+        // Timestamp
+        barang.setCreatedAt(rs.getTimestamp("created_at"));
+        barang.setUpdatedAt(rs.getTimestamp("updated_at"));
+        
+        return barang;
     }
-    
-    // Timestamp
-    barang.setCreatedAt(rs.getTimestamp("created_at"));
-    barang.setUpdatedAt(rs.getTimestamp("updated_at"));
-    
-    return barang;
-}
-
 }
