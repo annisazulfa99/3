@@ -14,7 +14,9 @@ public class InstansiDAO {
     // Ambil semua instansi
     public List<Instansi> getAll() {
         List<Instansi> list = new ArrayList<>();
-        String sql = "SELECT * FROM instansi ORDER BY nama_instansi";
+        String sql = "SELECT id_user, nama, role FROM user " +
+                     "WHERE role = 'instansi' AND status = 'aktif' " +
+                     "ORDER BY nama";
 
         try (Connection conn = db.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -33,44 +35,44 @@ public class InstansiDAO {
 
     // Ambil instansi berdasarkan kategori (LEMBAGA, BEM, HIMPUNAN, UKM)
     public List<String> getByKategori(String kategori) {
-        List<String> list = new ArrayList<>();
-        String sql = "SELECT nama_instansi FROM instansi WHERE kategori = ? ORDER BY nama_instansi";
-
-        try (Connection conn = db.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, kategori);
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                list.add(rs.getString("nama_instansi"));
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+    // Return semua instansi saja
+    List<String> list = new ArrayList<>();
+    String sql = "SELECT nama FROM user WHERE role = 'instansi' AND status = 'aktif' ORDER BY nama";
+    
+    try (Connection conn = db.getConnection();
+         Statement stmt = conn.createStatement()) {
+        
+        ResultSet rs = stmt.executeQuery(sql);
+        while (rs.next()) {
+            list.add(rs.getString("nama"));
         }
-        return list;
+        
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+    return list;
+}
 
     // Ambil ID instansi dari nama
     public int getIdByNama(String namaInstansi) {
-        String sql = "SELECT id_instansi FROM instansi WHERE nama_instansi = ? LIMIT 1";
+    String sql = "SELECT id_user FROM user " +
+                 "WHERE role = 'instansi' AND nama = ? LIMIT 1";
 
-        try (Connection conn = db.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+    try (Connection conn = db.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, namaInstansi);
-            ResultSet rs = stmt.executeQuery();
+        stmt.setString(1, namaInstansi);
+        ResultSet rs = stmt.executeQuery();
 
-            if (rs.next()) {
-                return rs.getInt("id_instansi");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (rs.next()) {
+            return rs.getInt("id_user");
         }
-        return -1; // Tidak ditemukan
+
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+    return -1;
+}
 
     // Ambil nama instansi dari ID
     public String getNamaById(int idInstansi) {
