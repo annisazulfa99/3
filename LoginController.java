@@ -139,17 +139,18 @@ public class LoginController implements Initializable {
     /**
      * Handle successful login
      */
-   private void handleLoginSuccess(User user) {
+ /**
+ * Handle successful login (FIXED - langsung pakai id_user)
+ */
+private void handleLoginSuccess(User user) {
     try {
-        Integer roleId = getRoleId(user);
-        sessionManager.login(user, roleId);
+        // ✅ LANGSUNG PAKAI id_user sebagai roleId
+        sessionManager.login(user, user.getIdUser());
 
         LogActivityUtil.logLogin(user.getUsername(), user.getRole());
         System.out.println("✅ Login successful: " + user.getUsername() + " (" + user.getRole() + ")");
 
-        // Navigate ke layout utama
         Main.showMainLayout();
-
         System.gc();
 
     } catch (Exception e) {
@@ -157,7 +158,6 @@ public class LoginController implements Initializable {
         e.printStackTrace();
     }
 }
-
     
     /**
      * Get role-specific ID (id_peminjam, id_admin, id_instansi)
