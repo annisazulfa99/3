@@ -71,12 +71,11 @@ public class LaporDAO {
      */
     public Lapor getById(int id) {
         String sql = "SELECT l.*, u.nama as nama_peminjam, br.nama_barang " +
-                     "FROM lapor l " +
-                     "JOIN borrow b ON l.id_peminjaman = b.id_peminjaman " +
-                     "JOIN peminjam p ON b.id_peminjam = p.id_peminjam " +
-                     "JOIN user u ON p.id_user = u.id_user " +
-                     "JOIN barang br ON l.kode_barang = br.kode_barang " +
-                     "WHERE l.id_laporan = ?";
+             "FROM lapor l " +
+             "JOIN borrow b ON l.id_peminjaman = b.id_peminjaman " +
+             "JOIN user u ON b.id_peminjam = u.id_user " + // ✅ Langsung ke user
+             "JOIN barang br ON l.kode_barang = br.kode_barang " +
+             "WHERE l.id_laporan = ?";
         
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -104,12 +103,11 @@ public class LaporDAO {
      */
     public Lapor getByNoLaporan(String noLaporan) {
         String sql = "SELECT l.*, u.nama as nama_peminjam, br.nama_barang " +
-                     "FROM lapor l " +
-                     "JOIN borrow b ON l.id_peminjaman = b.id_peminjaman " +
-                     "JOIN peminjam p ON b.id_peminjam = p.id_peminjam " +
-                     "JOIN user u ON p.id_user = u.id_user " +
-                     "JOIN barang br ON l.kode_barang = br.kode_barang " +
-                     "WHERE l.no_laporan = ?";
+             "FROM lapor l " +
+             "JOIN borrow b ON l.id_peminjaman = b.id_peminjaman " +
+             "JOIN user u ON b.id_peminjam = u.id_user " + // ✅
+             "JOIN barang br ON l.kode_barang = br.kode_barang " +
+             "WHERE l.no_laporan = ?";
         
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -137,12 +135,11 @@ public class LaporDAO {
     public List<Lapor> getAll() {
         List<Lapor> list = new ArrayList<>();
         String sql = "SELECT l.*, u.nama as nama_peminjam, br.nama_barang " +
-                     "FROM lapor l " +
-                     "JOIN borrow b ON l.id_peminjaman = b.id_peminjaman " +
-                     "JOIN peminjam p ON b.id_peminjam = p.id_peminjam " +
-                     "JOIN user u ON p.id_user = u.id_user " +
-                     "JOIN barang br ON l.kode_barang = br.kode_barang " +
-                     "ORDER BY l.created_at DESC";
+             "FROM lapor l " +
+             "JOIN borrow b ON l.id_peminjaman = b.id_peminjaman " +
+             "JOIN user u ON b.id_peminjam = u.id_user " + // ✅
+             "JOIN barang br ON l.kode_barang = br.kode_barang " +
+             "ORDER BY l.created_at DESC";
         
         try (Connection conn = dbConfig.getConnection();
              Statement stmt = conn.createStatement();
@@ -169,13 +166,12 @@ public class LaporDAO {
     public List<Lapor> getByStatus(String status) {
         List<Lapor> list = new ArrayList<>();
         String sql = "SELECT l.*, u.nama as nama_peminjam, br.nama_barang " +
-                     "FROM lapor l " +
-                     "JOIN borrow b ON l.id_peminjaman = b.id_peminjaman " +
-                     "JOIN peminjam p ON b.id_peminjam = p.id_peminjam " +
-                     "JOIN user u ON p.id_user = u.id_user " +
-                     "JOIN barang br ON l.kode_barang = br.kode_barang " +
-                     "WHERE l.status = ? " +
-                     "ORDER BY l.created_at DESC";
+             "FROM lapor l " +
+             "JOIN borrow b ON l.id_peminjaman = b.id_peminjaman " +
+             "JOIN user u ON b.id_peminjam = u.id_user " + // ✅
+             "JOIN barang br ON l.kode_barang = br.kode_barang " +
+             "WHERE l.status = ? " +
+             "ORDER BY l.created_at DESC";
         
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -204,13 +200,12 @@ public class LaporDAO {
     public List<Lapor> getByPeminjamanId(int peminjamanId) {
         List<Lapor> list = new ArrayList<>();
         String sql = "SELECT l.*, u.nama as nama_peminjam, br.nama_barang " +
-                     "FROM lapor l " +
-                     "JOIN borrow b ON l.id_peminjaman = b.id_peminjaman " +
-                     "JOIN peminjam p ON b.id_peminjam = p.id_peminjam " +
-                     "JOIN user u ON p.id_user = u.id_user " +
-                     "JOIN barang br ON l.kode_barang = br.kode_barang " +
-                     "WHERE l.id_peminjaman = ? " +
-                     "ORDER BY l.created_at DESC";
+             "FROM lapor l " +
+             "JOIN borrow b ON l.id_peminjaman = b.id_peminjaman " +
+             "JOIN user u ON b.id_peminjam = u.id_user " + // ✅
+             "JOIN barang br ON l.kode_barang = br.kode_barang " +
+             "WHERE l.id_peminjaman = ? " +
+             "ORDER BY l.created_at DESC";
         
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
