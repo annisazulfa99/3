@@ -38,30 +38,38 @@ public class UserDAO {
      * @return User object if authenticated, null otherwise
      */
     public User authenticate(String username, String password) {
-        String sql = "SELECT * FROM user WHERE username = ? AND status = 'aktif'";
+    String sql = "SELECT * FROM user WHERE username = ? AND status = 'aktif'";
+    
+    try (Connection conn = dbConfig.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
         
-        try (Connection conn = dbConfig.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setString(1, username);
+        ResultSet rs = stmt.executeQuery();
+        
+        if (rs.next()) {
+            String storedPassword = rs.getString("password");
             
-            stmt.setString(1, username);
-            ResultSet rs = stmt.executeQuery();
-            
-            if (rs.next()) {
-                String hashedPassword = rs.getString("password");
-                
-                // Verify password (support both plain and hashed)
-                if (password.equals(hashedPassword) || BCrypt.checkpw(password, hashedPassword)) {
-                    return extractUserFromResultSet(rs);
-                }
+            // ✅ PENTING: Cek plain text dulu, baru BCrypt
+            if (password.equals(storedPassword)) {
+                System.out.println("✅ Password match (plain text)");
+                return extractUserFromResultSet(rs);
+            } else if (storedPassword.startsWith("$2") && BCrypt.checkpw(password, storedPassword)) {
+                System.out.println("✅ Password match (BCrypt)");
+                return extractUserFromResultSet(rs);
+            } else {
+                System.out.println("❌ Password tidak cocok");
             }
-            
-        } catch (SQLException e) {
-            System.err.println("Error authenticating user: " + e.getMessage());
-            e.printStackTrace();
+        } else {
+            System.out.println("❌ User tidak ditemukan atau status nonaktif");
         }
         
-        return null;
+    } catch (SQLException e) {
+        System.err.println("Error authenticating user: " + e.getMessage());
+        e.printStackTrace();
     }
+    
+    return null;
+}
     
     /**
      * Register new user with role
