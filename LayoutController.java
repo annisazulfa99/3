@@ -160,7 +160,7 @@ public class LayoutController implements Initializable {
 
         if ("peminjam".equals(role)) {
             // Peminjam → Barang.fxml
-            loadPage("/fxml/Barang.fxml");
+            loadPage("/fxml/DataBarang.fxml");
         } else if ("instansi".equals(role)) {
             // Instansi → DataBarang.fxml (CRUD Barang Sendiri)
             loadPage("/fxml/DataBarang.fxml");
@@ -348,3 +348,4 @@ public class LayoutController implements Initializable {
         }
     }
 }
+
