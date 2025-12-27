@@ -333,7 +333,7 @@ public class DataBarangPeminjamController implements Initializable {
     private VBox createBarangCard(Barang barang) {
         VBox card = new VBox(10);
         card.setAlignment(Pos.TOP_CENTER);
-        card.setPrefSize(220, 320);
+        card.setPrefSize(220, 340); // ✅ Tambah tinggi untuk status
         card.setStyle("-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);");
 
         ImageView imageView = new ImageView();
@@ -366,19 +366,41 @@ public class DataBarangPeminjamController implements Initializable {
         Label stokLbl = new Label("Stok: " + barang.getJumlahTersedia());
         stokLbl.setStyle("-fx-font-size: 12px; -fx-text-fill: #666;");
 
+        // ✅ TAMBAH: Label Status dengan warna
+        Label statusLbl = new Label("Status: " + barang.getStatus());
+        String statusColor = "tersedia".equals(barang.getStatus()) ? "#28a745" : 
+                             "dipinjam".equals(barang.getStatus()) ? "#ffc107" : "#dc3545";
+        statusLbl.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: " + statusColor + ";");
+
         Label ownerLbl = new Label(barang.getNamaPemilik() != null ? barang.getNamaPemilik() : "Umum");
         ownerLbl.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #6A5436;");
 
         Button btnAdd = new Button("+ Keranjang");
         btnAdd.setMaxWidth(Double.MAX_VALUE);
-        btnAdd.setStyle("-fx-background-color: #6A5436; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-weight: bold;");
-        btnAdd.setOnAction(e -> showAddToCartDialog(barang));
+        
+        // ✅ TAMBAH: Kondisi tombol berdasarkan status
+        if (!"tersedia".equals(barang.getStatus())) {
+            btnAdd.setDisable(true);
+            btnAdd.setStyle("-fx-background-color: #cccccc; -fx-text-fill: #666666; -fx-background-radius: 8;");
+            btnAdd.setText("Tidak Tersedia");
+        } else {
+            btnAdd.setStyle("-fx-background-color: #6A5436; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-weight: bold;");
+            btnAdd.setOnAction(e -> showAddToCartDialog(barang));
+        }
 
-        card.getChildren().addAll(imageView, nameLbl, stokLbl, ownerLbl, btnAdd);
+        // ✅ UBAH: Tambahkan statusLbl ke card
+        card.getChildren().addAll(imageView, nameLbl, stokLbl, statusLbl, ownerLbl, btnAdd);
         return card;
     }
 
     private void showAddToCartDialog(Barang barang) {
+        // ✅ TAMBAH: Validasi status barang
+        if (!"tersedia".equals(barang.getStatus())) {
+            AlertUtil.showWarning("Tidak Tersedia", 
+                "Barang ini sedang tidak tersedia (Status: " + barang.getStatus() + ")");
+            return;
+        }
+        
         Dialog<CartItem> dialog = new Dialog<>();
         dialog.setTitle("Tambah Keranjang");
         dialog.setHeaderText(barang.getNamaBarang());
