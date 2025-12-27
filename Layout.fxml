@@ -35,25 +35,28 @@
             <VBox spacing="20" style="-fx-padding: 30; -fx-background-color: #F5E6D3;">
 
                 <HBox alignment="CENTER_LEFT" spacing="10">
-    <Label fx:id="lblSimak" onMouseClicked="#handleHome" style="-fx-font-size: 48px; -fx-font-weight: bold; -fx-text-fill: #6A5436; -fx-cursor: hand;" text="SIMAK" />
+                    <Label fx:id="lblSimak" onMouseClicked="#handleHome" style="-fx-font-size: 48px; -fx-font-weight: bold; -fx-text-fill: #6A5436; -fx-cursor: hand;" text="SIMAK" />
 
-    <Region prefWidth="20" /> 
+                    <Region prefWidth="20" /> 
 
-    <TextField fx:id="txtSearch" maxWidth="Infinity" prefHeight="40" promptText="Cari barang..." style="-fx-background-color: #D9CBC1; -fx-background-radius: 10; -fx-font-size: 16px; -fx-padding: 10;" HBox.hgrow="ALWAYS" />
+                    <TextField fx:id="txtSearch" maxWidth="Infinity" prefHeight="40" promptText="Cari barang..." style="-fx-background-color: #D9CBC1; -fx-background-radius: 10; -fx-font-size: 16px; -fx-padding: 10;" HBox.hgrow="ALWAYS" />
 
-    <Button fx:id="btnSearch" onAction="#handleSearch" prefHeight="40" style="-fx-background-color: #8C6E63; -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand; -fx-font-weight: bold;" text="🔍 Cari" />
+                    <Button fx:id="btnSearch" onAction="#handleSearch" prefHeight="40" style="-fx-background-color: #8C6E63; -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand; -fx-font-weight: bold;" text="🔍 Cari" />
 
-    <Button onAction="#handleRefresh" prefHeight="40" prefWidth="40" style="-fx-background-color: #6A5436; -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand; -fx-font-size: 16px;" text="🔄">
-        <tooltip>
-            <Tooltip text="Refresh Halaman" />
-        </tooltip>
-    </Button>
-</HBox>
+                    <Button onAction="#handleRefresh" prefHeight="40" prefWidth="40" style="-fx-background-color: #6A5436; -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand; -fx-font-size: 16px;" text="🔄">
+                        <tooltip>
+                            <Tooltip text="Refresh Halaman" />
+                        </tooltip>
+                    </Button>
+                </HBox>
 
                 <HBox alignment="CENTER_LEFT" spacing="20">
                     <Button fx:id="btnDashboard" maxWidth="Infinity" onAction="#handleDashboard" prefHeight="50" style="-fx-background-color: #D9CBC1; -fx-background-radius: 25; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Dashboard" HBox.hgrow="ALWAYS" />
 
                     <Button fx:id="btnPeminjaman" maxWidth="Infinity" onAction="#handlePeminjaman" prefHeight="50" style="-fx-background-color: #D9CBC1; -fx-background-radius: 25; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Peminjaman" HBox.hgrow="ALWAYS" />
+
+                    <!-- ✅ BUTTON BARU: Pengembalian (Peminjam) -->
+                    <Button fx:id="btnPengembalian" maxWidth="Infinity" onAction="#handlePengembalian" prefHeight="50" style="-fx-background-color: #D9CBC1; -fx-background-radius: 25; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Pengembalian" HBox.hgrow="ALWAYS" />
 
                     <Button fx:id="btnLaporan" maxWidth="Infinity" onAction="#handleLaporan" prefHeight="50" style="-fx-background-color: #D9CBC1; -fx-background-radius: 25; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Lapor" HBox.hgrow="ALWAYS" />
 
@@ -64,6 +67,9 @@
                     <Button fx:id="btnLapor" maxWidth="Infinity" onAction="#handleLapor" prefHeight="50" style="-fx-background-color: #D9CBC1; -fx-background-radius: 25; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Laporan" HBox.hgrow="ALWAYS" />
                     
                     <Button fx:id="btnBerita" maxWidth="Infinity" onAction="#handleBerita" prefHeight="50" style="-fx-background-color: #D9CBC1; -fx-background-radius: 25; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Berita" HBox.hgrow="ALWAYS" />
+                    
+                    <!-- ✅ BUTTON BARU: Verifikasi Return (Admin) -->
+                    <Button fx:id="btnVerifikasiReturn" maxWidth="Infinity" onAction="#handleVerifikasiReturn" prefHeight="50" style="-fx-background-color: #D9CBC1; -fx-background-radius: 25; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Verifikasi Return" HBox.hgrow="ALWAYS" />
                 </HBox>
 
                 <StackPane fx:id="contentArea" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
