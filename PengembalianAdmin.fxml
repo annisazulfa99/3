@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane fitToWidth="true" hbarPolicy="AS_NEEDED" pannable="true" 
+            style="-fx-background-color: #f8f9fa;" 
+            xmlns="http://javafx.com/javafx/21" 
+            xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.inventaris.controller.PengembalianAdminController">
+
+    <VBox spacing="20" style="-fx-padding: 30; -fx-background-color: #f8f9fa;">
+        
+        <!-- HEADER -->
+        <HBox alignment="CENTER_LEFT" spacing="20">
+            <Label style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #5D4037;" 
+                   text="✅ Verifikasi Pengembalian" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button text="🔄 Refresh" onAction="#handleRefresh" 
+                    style="-fx-background-color: #6A5436; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand;" />
+        </HBox>
+
+        <!-- STATISTICS CARDS -->
+        <HBox spacing="15" alignment="CENTER">
+            
+            <!-- Card: Pending -->
+            <VBox spacing="8" alignment="CENTER" 
+                  style="-fx-background-color: #fff3cd; -fx-padding: 20; -fx-background-radius: 10; -fx-min-width: 180;">
+                <Label style="-fx-font-size: 14px; -fx-text-fill: #856404;" text="⏳ Menunggu Verifikasi" />
+                <Label fx:id="lblPending" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #856404;" text="0" />
+            </VBox>
+
+            <!-- Card: Verified -->
+            <VBox spacing="8" alignment="CENTER" 
+                  style="-fx-background-color: #d4edda; -fx-padding: 20; -fx-background-radius: 10; -fx-min-width: 180;">
+                <Label style="-fx-font-size: 14px; -fx-text-fill: #155724;" text="✅ Terverifikasi" />
+                <Label fx:id="lblVerified" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #155724;" text="0" />
+            </VBox>
+
+            <!-- Card: Rejected -->
+            <VBox spacing="8" alignment="CENTER" 
+                  style="-fx-background-color: #f8d7da; -fx-padding: 20; -fx-background-radius: 10; -fx-min-width: 180;">
+                <Label style="-fx-font-size: 14px; -fx-text-fill: #721c24;" text="❌ Ditolak" />
+                <Label fx:id="lblRejected" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #721c24;" text="0" />
+            </VBox>
+
+        </HBox>
+
+        <!-- TABLE: PENDING RETURNS -->
+        <VBox spacing="15" 
+              style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+            
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #5D4037;" 
+                       text="📋 Daftar Pengembalian Menunggu" />
+                <Region HBox.hgrow="ALWAYS" />
+                <ComboBox fx:id="filterStatusCombo" prefWidth="180" 
+                          style="-fx-background-color: #f0f0f0; -fx-background-radius: 5;" />
+            </HBox>
+
+            <TableView fx:id="tableReturn" minHeight="500" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colReturnId" prefWidth="60" text="ID" />
+                    <TableColumn fx:id="colPeminjam" prefWidth="150" text="Peminjam" />
+                    <TableColumn fx:id="colBarang" prefWidth="200" text="Barang" />
+                    <TableColumn fx:id="colJumlah" prefWidth="80" text="Jumlah" />
+                    <TableColumn fx:id="colKondisi" prefWidth="120" text="Kondisi" />
+                    <TableColumn fx:id="colKeterangan" prefWidth="200" text="Keterangan" />
+                    <TableColumn fx:id="colTanggal" prefWidth="150" text="Tgl Pengembalian" />
+                    <TableColumn fx:id="colStatus" prefWidth="120" text="Status" />
+                    <TableColumn fx:id="colAction" prefWidth="250" text="Aksi" />
+                </columns>
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                </columnResizePolicy>
+                <placeholder>
+                    <VBox alignment="CENTER" spacing="10" style="-fx-padding: 30;">
+                        <Label style="-fx-font-size: 48px;" text="✅" />
+                        <Label style="-fx-font-size: 16px; -fx-text-fill: #666;" 
+                               text="Tidak ada pengembalian yang perlu diverifikasi" />
+                    </VBox>
+                </placeholder>
+            </TableView>
+        </VBox>
+
+    </VBox>
+</ScrollPane>
