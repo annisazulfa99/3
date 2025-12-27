@@ -30,24 +30,19 @@ public class BarangDAO {
      * Create new barang
      */
     public boolean create(Barang barang) {
-        String sql = "INSERT INTO barang (id_instansi, kode_barang, nama_barang, lokasi_barang, " +
-                     "jumlah_total, jumlah_tersedia, deskripsi, kondisi_barang, status, foto, foto_url) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO barang (id_instansi,nama_barang" +
+                     "jumlah_total, jumlah_tersedia, status, foto_barang) " +
+                     "VALUES (?, ?, ?, ?, ?,?)";
         
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setObject(1, barang.getIdInstansi()); // Support NULL
-            stmt.setString(2, barang.getKodeBarang());
             stmt.setString(3, barang.getNamaBarang());
-            stmt.setString(4, barang.getLokasiBarang());
             stmt.setInt(5, barang.getJumlahTotal());
             stmt.setInt(6, barang.getJumlahTersedia());
-            stmt.setString(7, barang.getDeskripsi());
-            stmt.setString(8, barang.getKondisiBarang());
             stmt.setString(9, barang.getStatus());
             stmt.setString(10, barang.getFoto());
-            stmt.setString(11, barang.getFotoUrl());
             
             return stmt.executeUpdate() > 0;
             
@@ -61,13 +56,13 @@ public class BarangDAO {
     /**
      * Get barang by kode
      */
-    public Barang getByKode(String kode) {
-        String sql = "SELECT * FROM barang WHERE kode_barang = ?";
+    public Barang getByKode(String id) {
+        String sql = "SELECT * FROM barang WHERE id_barang = ?";
         
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setString(1, kode);
+            stmt.setString(1, id);
             ResultSet rs = stmt.executeQuery();
             
             if (rs.next()) {
@@ -179,25 +174,21 @@ public class BarangDAO {
      */
     public boolean update(Barang barang) {
         String sql = "UPDATE barang SET " +
-                     "nama_barang = ?, lokasi_barang = ?, jumlah_total = ?, " +
-                     "jumlah_tersedia = ?, deskripsi = ?, kondisi_barang = ?, " +
-                     "status = ?, foto = ?, foto_url = ?, id_instansi = ? " +
-                     "WHERE kode_barang = ?";
+                     "nama_barang = ?, jumlah_total = ?, " +
+                     "jumlah_tersedia = ?" +
+                     "status = ?, foto_barang = ?,id_instansi = ? " +
+                     "WHERE id_barang = ?";
         
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, barang.getNamaBarang());
-            stmt.setString(2, barang.getLokasiBarang());
-            stmt.setInt(3, barang.getJumlahTotal());
-            stmt.setInt(4, barang.getJumlahTersedia());
-            stmt.setString(5, barang.getDeskripsi());
-            stmt.setString(6, barang.getKondisiBarang());
-            stmt.setString(7, barang.getStatus());
-            stmt.setString(8, barang.getFoto());
-            stmt.setString(9, barang.getFotoUrl());
-            stmt.setObject(10, barang.getIdInstansi()); // Support NULL
-            stmt.setString(11, barang.getKodeBarang());
+            stmt.setInt(2, barang.getJumlahTotal());
+            stmt.setInt(3, barang.getJumlahTersedia());
+            stmt.setString(4, barang.getStatus());
+            stmt.setString(5, barang.getFoto());
+            stmt.setObject(6, barang.getIdInstansi()); // Support NULL
+            stmt.setInt(7, barang.getIdBarang());
             
             return stmt.executeUpdate() > 0;
             
@@ -211,19 +202,19 @@ public class BarangDAO {
     /**
      * Update jumlah tersedia
      */
-    public boolean updateJumlahTersedia(String kodeBarang, int jumlah, boolean isAdd) {
+    public boolean updateJumlahTersedia(String idBarang, int jumlah, boolean isAdd) {
         String sql;
         if (isAdd) {
-            sql = "UPDATE barang SET jumlah_tersedia = jumlah_tersedia + ? WHERE kode_barang = ?";
+            sql = "UPDATE barang SET jumlah_tersedia = jumlah_tersedia + ? WHERE id_barang = ?";
         } else {
-            sql = "UPDATE barang SET jumlah_tersedia = jumlah_tersedia - ? WHERE kode_barang = ?";
+            sql = "UPDATE barang SET jumlah_tersedia = jumlah_tersedia - ? WHERE id_barang = ?";
         }
         
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setInt(1, jumlah);
-            stmt.setString(2, kodeBarang);
+            stmt.setString(2, idBarang);
             
             return stmt.executeUpdate() > 0;
             
@@ -237,13 +228,13 @@ public class BarangDAO {
     /**
      * Delete barang
      */
-    public boolean delete(String kode) {
-        String sql = "DELETE FROM barang WHERE kode_barang = ?";
+    public boolean delete(String id) {
+        String sql = "DELETE FROM barang WHERE id_barang = ?";
         
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setString(1, kode);
+            stmt.setString(1, id);
             return stmt.executeUpdate() > 0;
             
         } catch (SQLException e) {
@@ -293,13 +284,13 @@ public class BarangDAO {
     /**
      * Check if kode barang exists
      */
-    public boolean kodeExists(String kodeBarang) {
-        String sql = "SELECT COUNT(*) FROM barang WHERE kode_barang = ?";
+    public boolean kodeExists(String idBarang) {
+        String sql = "SELECT COUNT(*) FROM barang WHERE id_barang = ?";
         
         try (Connection conn = dbConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setString(1, kodeBarang);
+            stmt.setString(1, idBarang);
             ResultSet rs = stmt.executeQuery();
             
             if (rs.next()) {
@@ -307,7 +298,7 @@ public class BarangDAO {
             }
             
         } catch (SQLException e) {
-            System.err.println("Error checking kode barang: " + e.getMessage());
+            System.err.println("Error checking id barang: " + e.getMessage());
             e.printStackTrace();
         }
         
@@ -419,22 +410,12 @@ public class BarangDAO {
         barang.setIdInstansi(rs.wasNull() ? null : idInstansi);
         
         // Data utama
-        barang.setKodeBarang(rs.getString("kode_barang"));
+        barang.setIdBarang(rs.getInt("id_barang"));
         barang.setNamaBarang(rs.getString("nama_barang"));
-        barang.setLokasiBarang(rs.getString("lokasi_barang"));
         barang.setJumlahTotal(rs.getInt("jumlah_total"));
         barang.setJumlahTersedia(rs.getInt("jumlah_tersedia"));
-        barang.setDeskripsi(rs.getString("deskripsi"));
-        barang.setKondisiBarang(rs.getString("kondisi_barang"));
         barang.setStatus(rs.getString("status"));
-        barang.setFoto(rs.getString("foto"));
-        
-        // Foto URL (opsional)
-        try {
-            barang.setFotoUrl(rs.getString("foto_url"));
-        } catch (SQLException e) {
-            barang.setFotoUrl(null);
-        }
+        barang.setFoto(rs.getString("foto_barang"));
         
         // Timestamp
         barang.setCreatedAt(rs.getTimestamp("created_at"));
