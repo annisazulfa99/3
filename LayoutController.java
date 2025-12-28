@@ -155,7 +155,7 @@ public class LayoutController implements Initializable {
         if ("peminjam".equals(role)) {
             loadPage("/fxml/DataBarang.fxml");
         } else if ("instansi".equals(role)) {
-            loadPage("/fxml/DataBarang.fxml");
+            loadPage("/fxml/BarangInstansi.fxml");
         } 
     }
 
@@ -345,3 +345,4 @@ public class LayoutController implements Initializable {
         }
     }
 }
+
