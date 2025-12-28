@@ -20,10 +20,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-/**
- * LayoutController - Main Layout Controller
- * UPDATED: Tambah fitur Pengembalian untuk Peminjam & Admin
- */
 public class LayoutController implements Initializable {
 
     @FXML private Circle profileImage;
@@ -36,8 +32,6 @@ public class LayoutController implements Initializable {
     @FXML private Button btnBarang;
     @FXML private Button btnUser;
     @FXML private Button btnBerita;
-    
-    // ✅ BUTTON BARU: Pengembalian
     @FXML private Button btnPengembalian;
     @FXML private Button btnVerifikasiReturn;
     
@@ -61,7 +55,9 @@ public class LayoutController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
         
-        System.out.println("🔧 LayoutController.initialize() started");
+        System.out.println("=================================================");
+        System.out.println("🔧 LayoutController INITIALIZE START");
+        System.out.println("=================================================");
         
         User currentUser = sessionManager.getCurrentUser();
         if (currentUser == null) {
@@ -74,45 +70,131 @@ public class LayoutController implements Initializable {
         welcomeLabel.setText("Halo, " + currentUser.getNama());
         roleLabel.setText(getRoleDisplayName(currentUser.getRole()));
         
-        System.out.println("👤 User: " + currentUser.getNama() + " (" + currentUser.getRole() + ")");
+        System.out.println("👤 Current User: " + currentUser.getNama());
+        System.out.println("🎭 Current Role: " + currentUser.getRole());
+        
+        // DEBUG: Check if buttons are loaded from FXML
+        System.out.println("\n📋 Button Loading Status:");
+        System.out.println("  btnDashboard: " + (btnDashboard != null ? "✅ Loaded" : "❌ NULL"));
+        System.out.println("  btnPeminjaman: " + (btnPeminjaman != null ? "✅ Loaded" : "❌ NULL"));
+        System.out.println("  btnPengembalian: " + (btnPengembalian != null ? "✅ Loaded" : "❌ NULL"));
+        System.out.println("  btnLaporan: " + (btnLaporan != null ? "✅ Loaded" : "❌ NULL"));
+        System.out.println("  btnBarang: " + (btnBarang != null ? "✅ Loaded" : "❌ NULL"));
+        System.out.println("  btnUser: " + (btnUser != null ? "✅ Loaded" : "❌ NULL"));
+        System.out.println("  btnLapor: " + (btnLapor != null ? "✅ Loaded" : "❌ NULL"));
+        System.out.println("  btnBerita: " + (btnBerita != null ? "✅ Loaded" : "❌ NULL"));
+        System.out.println("  btnVerifikasiReturn: " + (btnVerifikasiReturn != null ? "✅ Loaded" : "❌ NULL"));
 
+        System.out.println("\n🔧 Configuring menu for role: " + currentUser.getRole());
         configureMenuByRole(currentUser.getRole());
+        
         handleHome();
         
-        System.out.println("✅ LayoutController initialized");
+        System.out.println("=================================================");
+        System.out.println("✅ LayoutController INITIALIZE COMPLETE");
+        System.out.println("=================================================\n");
     }
 
-    // =================================================================
-    // ✅ NAVIGASI BARU: PENGEMBALIAN
-    // =================================================================
-
-    /**
-     * Untuk PEMINJAM - Ajukan Pengembalian
-     */
-    @FXML
-    public void handlePengembalian() {
-        System.out.println("📂 handlePengembalian() → Peminjam ajukan pengembalian");
-        setActiveMenu(btnPengembalian);
-        loadPage("/fxml/PengembalianPeminjam.fxml");
+    private void configureMenuByRole(String role) {
+        System.out.println("\n🎯 === CONFIGURE MENU BY ROLE ===");
+        System.out.println("Role received: '" + role + "'");
+        
+        // Step 1: Hide ALL buttons first
+        System.out.println("\n📴 Step 1: Hiding all buttons...");
+        hideAllButtons();
+        
+        // Step 2: Show buttons based on role
+        System.out.println("\n📱 Step 2: Showing buttons for role '" + role + "'...");
+        
+        if ("admin".equals(role)) {
+            System.out.println("🔑 ADMIN MODE ACTIVATED");
+            
+            if (btnBerita != null) {
+                btnBerita.setVisible(true);
+                btnBerita.setManaged(true);
+                System.out.println("  ✅ btnBerita: VISIBLE");
+            } else {
+                System.out.println("  ❌ btnBerita: NULL!");
+            }
+            
+            if (btnUser != null) {
+                btnUser.setVisible(true);
+                btnUser.setManaged(true);
+                System.out.println("  ✅ btnUser: VISIBLE");
+            } else {
+                System.out.println("  ❌ btnUser: NULL!");
+            }
+            
+            if (btnLapor != null) {
+                btnLapor.setVisible(true);
+                btnLapor.setManaged(true);
+                System.out.println("  ✅ btnLapor: VISIBLE");
+            } else {
+                System.out.println("  ❌ btnLapor: NULL!");
+            }
+            
+            if (btnVerifikasiReturn != null) {
+                btnVerifikasiReturn.setVisible(true);
+                btnVerifikasiReturn.setManaged(true);
+                System.out.println("  ✅ btnVerifikasiReturn: VISIBLE");
+                System.out.println("      Text: " + btnVerifikasiReturn.getText());
+                System.out.println("      Managed: " + btnVerifikasiReturn.isManaged());
+                System.out.println("      Visible: " + btnVerifikasiReturn.isVisible());
+            } else {
+                System.out.println("  ❌❌❌ btnVerifikasiReturn: NULL! ❌❌❌");
+                System.out.println("  ⚠️ MASALAH: Button tidak ter-load dari FXML!");
+            }
+            
+        } else if ("peminjam".equals(role)) {
+            System.out.println("👤 PEMINJAM MODE ACTIVATED");
+            showButton(btnBarang, "btnBarang");
+            showButton(btnPeminjaman, "btnPeminjaman");
+            showButton(btnLaporan, "btnLaporan");
+            showButton(btnPengembalian, "btnPengembalian");
+            
+        } else if ("instansi".equals(role)) {
+            System.out.println("🏢 INSTANSI MODE ACTIVATED");
+            showButton(btnBarang, "btnBarang");
+            showButton(btnPeminjaman, "btnPeminjaman");
+        } else {
+            System.err.println("⚠️ UNKNOWN ROLE: " + role);
+        }
+        
+        System.out.println("\n=== END CONFIGURE MENU ===\n");
     }
-
-    /**
-     * Untuk ADMIN - Verifikasi Pengembalian
-     */
-    @FXML
-    private void handleVerifikasiReturn() {
-        System.out.println("📂 handleVerifikasiReturn() → Admin verifikasi pengembalian");
-        setActiveMenu(btnVerifikasiReturn);
-        loadPage("/fxml/PengembalianAdmin.fxml");
+    
+    private void hideAllButtons() {
+        hideButton(btnBarang);
+        hideButton(btnPeminjaman);
+        hideButton(btnLaporan);
+        hideButton(btnUser);
+        hideButton(btnLapor);
+        hideButton(btnBerita);
+        hideButton(btnPengembalian);
+        hideButton(btnVerifikasiReturn);
+        System.out.println("  All buttons hidden");
     }
-
-    // =================================================================
-    // NAVIGASI MENU LAINNYA (EXISTING)
-    // =================================================================
+    
+    private void showButton(Button btn, String name) {
+        if (btn != null) {
+            btn.setVisible(true);
+            btn.setManaged(true);
+            System.out.println("  ✅ " + name + ": VISIBLE");
+        } else {
+            System.out.println("  ❌ " + name + ": NULL!");
+        }
+    }
+    
+    private void hideButton(Button btn) {
+        if (btn != null) {
+            btn.setVisible(false);
+            btn.setManaged(false);
+        }
+    }
 
     @FXML
     public void handleHome() {
-        System.out.println("📂 handleHome() (SIMAK clicked) → Loading Home.fxml");
+        System.out.println("📂 handleHome() → Loading Home.fxml");
         setActiveMenu(null);
         loadPage("/fxml/Home.fxml");
     }
@@ -129,6 +211,20 @@ public class LayoutController implements Initializable {
         System.out.println("📂 handlePeminjaman()");
         setActiveMenu(btnPeminjaman);
         loadPage("/fxml/Peminjaman.fxml");
+    }
+
+    @FXML
+    public void handlePengembalian() {
+        System.out.println("📂 handlePengembalian() → Peminjam ajukan pengembalian");
+        setActiveMenu(btnPengembalian);
+        loadPage("/fxml/PengembalianPeminjam.fxml");
+    }
+
+    @FXML
+    private void handleVerifikasiReturn() {
+        System.out.println("📂 handleVerifikasiReturn() → Admin verifikasi pengembalian");
+        setActiveMenu(btnVerifikasiReturn);
+        loadPage("/fxml/PengembalianAdmin.fxml");
     }
 
     @FXML
@@ -172,10 +268,6 @@ public class LayoutController implements Initializable {
         setActiveMenu(btnBerita);
         loadPage("/fxml/Berita-view.fxml");
     }
-    
-    // =================================================================
-    // HELPER METHODS
-    // =================================================================
 
     public void updateContentArea(Parent newContent) {
         if (contentArea != null) {
@@ -188,10 +280,6 @@ public class LayoutController implements Initializable {
     public void setActiveBarangMenu() {
         setActiveMenu(btnBarang);
     }
-
-    // =================================================================
-    // SEARCH
-    // =================================================================
 
     @FXML
     private void handleSearch() {
@@ -220,10 +308,6 @@ public class LayoutController implements Initializable {
         }
     }
 
-    // =================================================================
-    // STYLING
-    // =================================================================
-
     private void resetAllMenus() {
         if (btnDashboard != null) btnDashboard.setStyle(DEFAULT_STYLE);
         if (btnPeminjaman != null) btnPeminjaman.setStyle(DEFAULT_STYLE);
@@ -242,10 +326,6 @@ public class LayoutController implements Initializable {
             activeButton.setStyle(ACTIVE_STYLE);
         }
     }
-
-    // =================================================================
-    // UTILITIES
-    // =================================================================
 
     @FXML
     private void handleLogout() {
@@ -300,42 +380,6 @@ public class LayoutController implements Initializable {
         }
     }
 
-    private void configureMenuByRole(String role) {
-        // Reset semua tombol dulu
-        if (btnBarang != null) { btnBarang.setVisible(false); btnBarang.setManaged(false); }
-        if (btnPeminjaman != null) { btnPeminjaman.setVisible(false); btnPeminjaman.setManaged(false); }
-        if (btnLaporan != null) { btnLaporan.setVisible(false); btnLaporan.setManaged(false); }
-        if (btnUser != null) { btnUser.setVisible(false); btnUser.setManaged(false); }
-        if (btnLapor != null) { btnLapor.setVisible(false); btnLapor.setManaged(false); }
-        if (btnBerita != null) { btnBerita.setVisible(false); btnBerita.setManaged(false); }
-        if (btnPengembalian != null) { btnPengembalian.setVisible(false); btnPengembalian.setManaged(false); }
-        if (btnVerifikasiReturn != null) { btnVerifikasiReturn.setVisible(false); btnVerifikasiReturn.setManaged(false); }
-
-        switch (role) {
-            case "admin":
-                // Admin: Full access + Verifikasi Return
-                if (btnBerita != null) { btnBerita.setVisible(true); btnBerita.setManaged(true); }
-                if (btnUser != null) { btnUser.setVisible(true); btnUser.setManaged(true); }
-                if (btnLapor != null) { btnLapor.setVisible(true); btnLapor.setManaged(true); }
-                if (btnVerifikasiReturn != null) { btnVerifikasiReturn.setVisible(true); btnVerifikasiReturn.setManaged(true); }
-                break;
-
-            case "peminjam":
-                // Peminjam: Katalog, Peminjaman, Lapor, Pengembalian
-                if (btnBarang != null) { btnBarang.setVisible(true); btnBarang.setManaged(true); }
-                if (btnPeminjaman != null) { btnPeminjaman.setVisible(true); btnPeminjaman.setManaged(true); }
-                if (btnLaporan != null) { btnLaporan.setVisible(true); btnLaporan.setManaged(true); }
-                if (btnPengembalian != null) { btnPengembalian.setVisible(true); btnPengembalian.setManaged(true); }
-                break;
-
-            case "instansi":
-                // Instansi: CRUD barang, verifikasi peminjaman (TIDAK ada pengembalian)
-                if (btnBarang != null) { btnBarang.setVisible(true); btnBarang.setManaged(true); }
-                if (btnPeminjaman != null) { btnPeminjaman.setVisible(true); btnPeminjaman.setManaged(true); }
-                break;
-        }
-    }
-
     private String getRoleDisplayName(String role) {
         switch (role) {
             case "admin": return "Administrator";
@@ -345,4 +389,3 @@ public class LayoutController implements Initializable {
         }
     }
 }
-
