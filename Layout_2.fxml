@@ -50,6 +50,10 @@
                     <Button fx:id="btnLapor" maxWidth="Infinity" onAction="#handleLapor" prefHeight="50" style="-fx-background-color: #D9CBC1; -fx-background-radius: 25; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Laporan" HBox.hgrow="ALWAYS" />
                     
                     <Button fx:id="btnBerita" maxWidth="Infinity" onAction="#handleBerita" prefHeight="50" style="-fx-background-color: #D9CBC1; -fx-background-radius: 25; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Berita" HBox.hgrow="ALWAYS" />
+                    
+                    <Button fx:id="btnPengembalian" text="Pengembalian" onAction="#handlePengembalian" style = "-fx-background-color: #D9CBC1; -fx-background-radius: 25;-fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" prefWidth="180" prefHeight="50"/>
+               
+                     <Button fx:id="btnVerifikasiReturn" maxWidth="Infinity" onAction="#handleVerifikasiReturn" prefHeight="50" style="-fx-background-color: #D9CBC1; -fx-background-radius: 25; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Verifikasi Return" HBox.hgrow="ALWAYS" />
                 </HBox>
 
 
